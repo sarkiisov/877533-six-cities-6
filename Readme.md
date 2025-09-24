@@ -1,7 +1,7 @@
 # Личный проект «Шесть городов»
 
-* Студент: [Никита Саркисов](https://up.htmlacademy.ru/univer-js3/6/user/877533).
-* Наставник: `Неизвестно`.
+- Студент: [Никита Саркисов](https://up.htmlacademy.ru/univer-js3/6/user/877533).
+- Наставник: [Антон Ткачук](https://htmlacademy.ru/profile/id2397393).
 
 ---
 
