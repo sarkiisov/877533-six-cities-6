@@ -12,7 +12,7 @@ export const App = () => (
     <Routes>
       <Route path="/" element={<Main offers={offers} />} />
       <Route path="/login" element={<Login />} />
-      <Route element={<ProtectedRoutes isLoading isAuthenticated />}>
+      <Route element={<ProtectedRoutes isAuthenticated />}>
         <Route path="/favorites" element={<Favorites offers={offers} />} />
       </Route>
       <Route path="/offer/:id" element={<Offer />} />

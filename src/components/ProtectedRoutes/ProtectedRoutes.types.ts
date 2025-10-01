@@ -1,4 +1,4 @@
 export type ProtectedRoutesProps = {
-  isLoading: boolean;
-  isAuthenticated: boolean;
+  isLoading?: boolean;
+  isAuthenticated?: boolean;
 };
