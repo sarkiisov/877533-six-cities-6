@@ -92,15 +92,7 @@ export const Favorites = ({ offers }: FavoritesProps) => {
                     <div className="favorites__places">
                       <OfferCardList
                         offers={groupedOffers[cityName]}
-                        offerCardProps={{
-                          previewImageWidth: 150,
-                          previewImageHeight: 100,
-                          classNames: {
-                            root: 'favorites__card',
-                            imageWrapper: 'favorites__image-wrapper',
-                            info: 'favorites__card-info',
-                          },
-                        }}
+                        orientation="horizontal"
                       />
                     </div>
                   </li>

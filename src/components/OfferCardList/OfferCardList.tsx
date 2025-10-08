@@ -1,7 +1,7 @@
 import { OfferCard } from '../OfferCard';
 import { OfferCardListProps } from './OfferCardList.types';
 
-export const OfferCardList = ({ offers, offerCardProps }: OfferCardListProps) =>
+export const OfferCardList = ({ offers, orientation }: OfferCardListProps) =>
   offers.map((offer) => (
-    <OfferCard key={offer.id} offer={offer} {...offerCardProps} />
+    <OfferCard key={offer.id} offer={offer} orientation={orientation} />
   ));

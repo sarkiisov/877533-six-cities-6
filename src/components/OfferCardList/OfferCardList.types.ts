@@ -1,8 +1,6 @@
 import { Offer } from '../../types';
 import { OfferCardProps } from '../OfferCard/OfferCard.types';
 
-export type OfferCardListProps = {
-  topSection?: React.ReactNode;
+export type OfferCardListProps = Pick<OfferCardProps, 'orientation'> & {
   offers: Offer[];
-  offerCardProps?: Omit<OfferCardProps, 'offer'>;
 };
