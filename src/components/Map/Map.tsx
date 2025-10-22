@@ -16,7 +16,7 @@ const currentCustomIcon = new Icon({
   iconAnchor: [20, 40],
 });
 
-export const Map = ({ city, points, selectedPoint }: MapProps) => {
+export const Map = ({ city, points, selectedPoint, ...props }: MapProps) => {
   const mapRef = useRef(null);
 
   const map = useMap(mapRef, city);
@@ -47,5 +47,5 @@ export const Map = ({ city, points, selectedPoint }: MapProps) => {
     }
   }, [map, points, selectedPoint]);
 
-  return <div className="map" style={{ width: '100%' }} ref={mapRef} />;
+  return <div ref={mapRef} {...props} />;
 };

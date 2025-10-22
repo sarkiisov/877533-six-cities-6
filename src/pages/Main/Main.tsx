@@ -135,8 +135,9 @@ export const Main = ({ offers }: MainProps) => {
                 </div>
               </section>
               <div className="cities__right-section">
-                {/* <section className="cities__map map"></section> */}
                 <Map
+                  style={{ backgroundImage: 'none' }}
+                  className="cities__map map"
                   points={amsterdamOffers.map((offer) => ({
                     latitude: offer.location.latitude,
                     longitude: offer.location.longitude,

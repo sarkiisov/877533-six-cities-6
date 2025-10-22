@@ -27,3 +27,15 @@ export type Point = {
   latitude: number;
   longitude: number;
 };
+
+export type Review = {
+  id: string;
+  date: string;
+  user: {
+    name: string;
+    avatarUrl: string;
+    isPro: boolean;
+  };
+  comment: string;
+  rating: 4;
+};
