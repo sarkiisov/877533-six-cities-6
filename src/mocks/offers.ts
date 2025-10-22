@@ -1,4 +1,4 @@
-import { Offer } from '../types';
+import { City, Offer } from '../types';
 
 export const offers: Offer[] = [
   {
@@ -2762,3 +2762,12 @@ export const offers: Offer[] = [
     rating: 4.2,
   },
 ];
+
+export const amsterdam: City = {
+  name: 'Amsterdam',
+  location: {
+    latitude: 52.37454,
+    longitude: 4.897976,
+    zoom: 13,
+  },
+};

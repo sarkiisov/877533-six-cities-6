@@ -21,3 +21,9 @@ export type Offer = {
   isPremium: boolean;
   rating: number;
 };
+
+export type Point = {
+  title: string;
+  latitude: number;
+  longitude: number;
+};
