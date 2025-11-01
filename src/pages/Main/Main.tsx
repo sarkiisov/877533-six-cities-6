@@ -1,14 +1,29 @@
-import { MainProps } from './Main.types';
 import { OfferCardList } from '../../components/OfferCardList';
 import clsx from 'clsx';
 import { Link } from 'react-router-dom';
 import { Map } from '../../components/Map';
-import { amsterdam } from '../../mocks/offers';
+import { CityList } from '../../components/CityList';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../store';
+import { setCity } from '../../store/action';
+import { useMemo } from 'react';
+import { cities } from '../../mocks';
+import { City } from '../../types';
+import { getPointFromOffer } from '../../utils/offer';
 
-export const Main = ({ offers }: MainProps) => {
-  const amsterdamOffers = offers.filter(
-    (offer) => offer.city.name === amsterdam.name
+export const Main = () => {
+  const { offers, city } = useSelector((state: RootState) => state);
+
+  const dispatch = useDispatch();
+
+  const filteredOffers = useMemo(
+    () => offers.filter((offer) => offer.city.name === city.name),
+    [offers, city]
   );
+
+  const handleCityChange = (nextCity: City) => {
+    dispatch(setCity(nextCity));
+  };
 
   return (
     <div className="page page--gray page--main">
@@ -53,53 +68,22 @@ export const Main = ({ offers }: MainProps) => {
 
       <main
         className={clsx('page__main page__main--index', {
-          'page__main--index-empty': !offers.length,
+          'page__main--index-empty': !filteredOffers.length,
         })}
       >
         <h1 className="visually-hidden">Cities</h1>
-        <div className="tabs">
-          <section className="locations container">
-            <ul className="locations__list tabs__list">
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Paris</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Cologne</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Brussels</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item tabs__item--active">
-                  <span>Amsterdam</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Hamburg</span>
-                </a>
-              </li>
-              <li className="locations__item">
-                <a className="locations__item-link tabs__item" href="#">
-                  <span>Dusseldorf</span>
-                </a>
-              </li>
-            </ul>
-          </section>
-        </div>
+        <CityList
+          cities={cities}
+          onCityChange={handleCityChange}
+          activeCity={city}
+        />
         <div className="cities">
-          {offers.length ? (
+          {filteredOffers.length ? (
             <div className="cities__places-container container">
               <section className="cities__places places">
                 <h2 className="visually-hidden">Places</h2>
                 <b className="places__found">
-                  {offers.length} places to stay in Amsterdam
+                  {filteredOffers.length} places to stay in {city.name}
                 </b>
                 <form className="places__sorting" action="#" method="get">
                   <span className="places__sorting-caption">Sort by</span>
@@ -129,7 +113,7 @@ export const Main = ({ offers }: MainProps) => {
                 </form>
                 <div className="cities__places-list places__list tabs__content">
                   <OfferCardList
-                    offers={amsterdamOffers}
+                    offers={filteredOffers}
                     orientation="vertical"
                   />
                 </div>
@@ -138,12 +122,8 @@ export const Main = ({ offers }: MainProps) => {
                 <Map
                   style={{ backgroundImage: 'none' }}
                   className="cities__map map"
-                  points={amsterdamOffers.map((offer) => ({
-                    latitude: offer.location.latitude,
-                    longitude: offer.location.longitude,
-                    title: offer.title,
-                  }))}
-                  city={amsterdam}
+                  points={filteredOffers.map(getPointFromOffer)}
+                  city={city}
                 />
               </div>
             </div>
@@ -154,7 +134,7 @@ export const Main = ({ offers }: MainProps) => {
                   <b className="cities__status">No places to stay available</b>
                   <p className="cities__status-description">
                     We could not find any property available at the moment in
-                    Dusseldorf
+                    {city.name}
                   </p>
                 </div>
               </section>
