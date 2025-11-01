@@ -1,5 +1,0 @@
-import { Offer } from '../../types';
-
-export type MainProps = {
-  offers: Offer[];
-};
