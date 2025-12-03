@@ -23,6 +23,7 @@ export type Offer = {
 };
 
 export type Point = {
+  id: string;
   title: string;
   latitude: number;
   longitude: number;

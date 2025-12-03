@@ -2,18 +2,20 @@ import { useEffect, useRef } from 'react';
 import { Icon, layerGroup, Marker } from 'leaflet';
 import { useMap } from '../../hooks/useMap';
 import { MapProps } from './Map.types';
-import { URL_MARKER_CURRENT, URL_MARKER_DEFAULT } from '../../consts';
+
+import Pin from '/img/pin.svg';
+import PinActive from '/img/pin-active.svg';
 
 const defaultCustomIcon = new Icon({
-  iconUrl: URL_MARKER_DEFAULT,
-  iconSize: [40, 40],
-  iconAnchor: [20, 40],
+  iconUrl: Pin,
+  iconSize: [27, 39],
+  iconAnchor: [27, 39],
 });
 
 const currentCustomIcon = new Icon({
-  iconUrl: URL_MARKER_CURRENT,
-  iconSize: [40, 40],
-  iconAnchor: [20, 40],
+  iconUrl: PinActive,
+  iconSize: [27, 39],
+  iconAnchor: [27, 39],
 });
 
 export const Map = ({ city, points, selectedPoint, ...props }: MapProps) => {
@@ -34,7 +36,7 @@ export const Map = ({ city, points, selectedPoint, ...props }: MapProps) => {
         marker
           .bindTooltip(point.title)
           .setIcon(
-            selectedPoint !== undefined && point.title === selectedPoint.title
+            selectedPoint !== undefined && point.id === selectedPoint
               ? currentCustomIcon
               : defaultCustomIcon
           )
