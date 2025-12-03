@@ -6,5 +6,5 @@ export type MapProps = React.DetailedHTMLProps<
 > & {
   city: City;
   points: Point[];
-  selectedPoint?: Point;
+  selectedPoint?: string;
 };

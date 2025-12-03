@@ -21,7 +21,11 @@ const getGroupedOffers = (offers: Offer[]) => {
   return offersByCities;
 };
 
-export const OfferCardList = ({ offers, orientation }: OfferCardListProps) => {
+export const OfferCardList = ({
+  offers,
+  orientation,
+  onOfferHover,
+}: OfferCardListProps) => {
   if (orientation === 'horizontal') {
     const groupedOffers = getGroupedOffers(offers);
 
@@ -36,7 +40,13 @@ export const OfferCardList = ({ offers, orientation }: OfferCardListProps) => {
         </div>
         <div className="favorites__places">
           {groupedOffers[cityName].map((offer) => (
-            <OfferCard key={offer.id} offer={offer} orientation="horizontal" />
+            <OfferCard
+              onMouseEnter={() => onOfferHover?.(offer)}
+              onMouseLeave={() => onOfferHover?.(null)}
+              key={offer.id}
+              offer={offer}
+              orientation="horizontal"
+            />
           ))}
         </div>
       </li>
@@ -44,7 +54,13 @@ export const OfferCardList = ({ offers, orientation }: OfferCardListProps) => {
   }
   if (orientation === 'vertical') {
     return offers.map((offer) => (
-      <OfferCard key={offer.id} offer={offer} orientation="vertical" />
+      <OfferCard
+        onMouseEnter={() => onOfferHover?.(offer)}
+        onMouseLeave={() => onOfferHover?.(null)}
+        key={offer.id}
+        offer={offer}
+        orientation="vertical"
+      />
     ));
   }
 };
