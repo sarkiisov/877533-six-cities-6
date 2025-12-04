@@ -1,13 +1,13 @@
 import { configureStore, ThunkDispatch } from '@reduxjs/toolkit';
-import { reducer } from './reducer';
+import { rootReducer } from './reducers';
 import { createAPI } from '../api/api';
 import { AxiosInstance } from 'axios';
-import { Actions } from './action';
+import { Actions } from './actions';
 
 const api = createAPI();
 
 export const store = configureStore({
-  reducer,
+  reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ thunk: { extraArgument: api } }),
 });

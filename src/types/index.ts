@@ -65,7 +65,7 @@ export type Comment = {
   rating: number;
 };
 
-export type AuthorizationStatus = 'AUTH' | 'NO_AUTH' | 'UNKNOWN';
+export type AuthStatus = 'AUTH' | 'NO_AUTH' | 'UNKNOWN';
 
 export type AuthInfo = {
   name: string;

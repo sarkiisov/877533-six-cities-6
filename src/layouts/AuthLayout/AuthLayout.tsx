@@ -1,11 +1,9 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../store';
+import { getAuthStatus } from '../../store/selectors';
 
 export const AuthLayout = () => {
-  const authorizationStatus = useSelector(
-    (state: RootState) => state.authorizationStatus
-  );
+  const authStatus = useSelector(getAuthStatus);
 
   const location = useLocation();
 
@@ -13,7 +11,7 @@ export const AuthLayout = () => {
     UNKNOWN: null,
     AUTH: <Navigate to="/" replace state={{ from: location }} />,
     NO_AUTH: <Outlet />,
-  }[authorizationStatus];
+  }[authStatus];
 
   return renderComponent;
 };

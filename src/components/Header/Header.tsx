@@ -1,19 +1,15 @@
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { Dispatch, RootState } from '../../store';
+import { useDispatch, useSelector } from 'react-redux';
+import { Dispatch } from '../../store';
 import { Link, useNavigate } from 'react-router-dom';
 import { logout } from '../../store/api-actions';
 import { memo } from 'react';
+import { getAuthInfo, getAuthStatus } from '../../store/selectors';
 
 export const Header = memo(() => {
   const dispatch = useDispatch<Dispatch>();
 
-  const { authorizationStatus, authInfo } = useSelector(
-    (state: RootState) => ({
-      authorizationStatus: state.authorizationStatus,
-      authInfo: state.authInfo,
-    }),
-    shallowEqual
-  );
+  const authStatus = useSelector(getAuthStatus);
+  const authInfo = useSelector(getAuthInfo);
 
   const navigate = useNavigate();
 
@@ -46,7 +42,7 @@ export const Header = memo(() => {
           </div>
           <nav className="header__nav">
             <ul className="header__nav-list">
-              {authorizationStatus === 'AUTH' && (
+              {authStatus === 'AUTH' && (
                 <li className="header__nav-item user">
                   <Link
                     className="header__nav-link header__nav-link--profile"
@@ -86,7 +82,7 @@ export const Header = memo(() => {
                       </a>
                     </li>
                   ),
-                }[authorizationStatus]
+                }[authStatus]
               }
             </ul>
           </nav>

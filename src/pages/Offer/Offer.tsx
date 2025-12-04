@@ -2,8 +2,8 @@ import { CommentForm, CommentFormData } from '../../components/CommentForm';
 import { CommentList } from '../../components/CommentList';
 import { OfferCardList } from '../../components/OfferCardList';
 import { Map } from '../../components/Map';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { Dispatch, RootState } from '../../store';
+import { useDispatch, useSelector } from 'react-redux';
+import { Dispatch } from '../../store';
 import { getPointFromOffer } from '../../utils/offer';
 import { Header } from '../../components/Header';
 import { Navigate, useParams } from 'react-router-dom';
@@ -13,6 +13,12 @@ import { capitalize } from '../../utils/string';
 import { Offer as OfferType } from '../../types';
 import { Loader } from '../../components/Loader';
 import { Footer } from '../../components/Footer';
+import {
+  getAuthStatus,
+  getComments,
+  getNearbyOffers,
+  getOfferData,
+} from '../../store/selectors';
 
 export const Offer = () => {
   const { id } = useParams() as { id: string };
@@ -21,27 +27,13 @@ export const Offer = () => {
 
   const dispatch = useDispatch<Dispatch>();
 
-  const {
-    offer,
-    nearbyOffers,
-    comments,
-    isOfferLoading,
-    isOfferError,
-    authorizationStatus,
-  } = useSelector(
-    (state: RootState) => ({
-      offer: state.offer,
-      nearbyOffers: state.nearbyOffers,
-      comments: state.comments,
-      isOfferLoading: state.isOfferLoading,
-      isOfferError: state.isOfferError,
-      authorizationStatus: state.authorizationStatus,
-    }),
-    shallowEqual
-  );
+  const authStatus = useSelector(getAuthStatus);
+  const { data, isLoading, isError } = useSelector(getOfferData);
+  const nearbyOffers = useSelector(getNearbyOffers);
+  const comments = useSelector(getComments);
 
-  const handleFormSubmit = (data: CommentFormData) => {
-    dispatch(postComment(id, data));
+  const handleFormSubmit = (comment: CommentFormData) => {
+    dispatch(postComment(id, comment));
   };
 
   useEffect(() => {
@@ -51,7 +43,7 @@ export const Offer = () => {
     dispatch(fetchOffer(id));
   }, [id, dispatch]);
 
-  if (isOfferError) {
+  if (isError) {
     return <Navigate to="/404" />;
   }
 
@@ -59,13 +51,13 @@ export const Offer = () => {
     <div className="page">
       <Header />
       <main className="page__main page__main--offer">
-        {isOfferLoading && <Loader />}
-        {!isOfferLoading && offer && (
+        {isLoading && <Loader />}
+        {!isError && data && (
           <>
             <section className="offer">
               <div className="offer__gallery-container container">
                 <div className="offer__gallery">
-                  {offer.images.map((image) => (
+                  {data.images.map((image) => (
                     <div key={image} className="offer__image-wrapper">
                       <img
                         className="offer__image"
@@ -78,13 +70,13 @@ export const Offer = () => {
               </div>
               <div className="offer__container container">
                 <div className="offer__wrapper">
-                  {offer.isPremium && (
+                  {data.isPremium && (
                     <div className="offer__mark">
                       <span>Premium</span>
                     </div>
                   )}
                   <div className="offer__name-wrapper">
-                    <h1 className="offer__name">{offer.title}</h1>
+                    <h1 className="offer__name">{data.title}</h1>
                     <button
                       className="offer__bookmark-button button"
                       type="button"
@@ -101,32 +93,32 @@ export const Offer = () => {
                   </div>
                   <div className="offer__rating rating">
                     <div className="offer__stars rating__stars">
-                      <span style={{ width: `${offer.rating * 20}%` }}></span>
+                      <span style={{ width: `${data.rating * 20}%` }}></span>
                       <span className="visually-hidden">Rating</span>
                     </div>
                     <span className="offer__rating-value rating__value">
-                      {Math.round(offer.rating)}
+                      {Math.round(data.rating)}
                     </span>
                   </div>
                   <ul className="offer__features">
                     <li className="offer__feature offer__feature--entire">
-                      {capitalize(offer.type)}
+                      {capitalize(data.type)}
                     </li>
                     <li className="offer__feature offer__feature--bedrooms">
-                      {offer.bedrooms} Bedroom(-s)
+                      {data.bedrooms} Bedroom(-s)
                     </li>
                     <li className="offer__feature offer__feature--adults">
-                      Max {offer.maxAdults} adult(-s)
+                      Max {data.maxAdults} adult(-s)
                     </li>
                   </ul>
                   <div className="offer__price">
-                    <b className="offer__price-value">&euro;{offer.price}</b>
+                    <b className="offer__price-value">&euro;{data.price}</b>
                     <span className="offer__price-text">&nbsp;night</span>
                   </div>
                   <div className="offer__inside">
                     <h2 className="offer__inside-title">What&apos;s inside</h2>
                     <ul className="offer__inside-list">
-                      {offer.goods.map((good) => (
+                      {data.goods.map((good) => (
                         <li key={good} className="offer__inside-item">
                           {good}
                         </li>
@@ -139,26 +131,24 @@ export const Offer = () => {
                       <div className="offer__avatar-wrapper offer__avatar-wrapper--pro user__avatar-wrapper">
                         <img
                           className="offer__avatar user__avatar"
-                          src={offer.host.avatarUrl}
+                          src={data.host.avatarUrl}
                           width="74"
                           height="74"
                           alt="Host avatar"
                         />
                       </div>
-                      <span className="offer__user-name">
-                        {offer.host.name}
-                      </span>
-                      {offer.host.isPro && (
+                      <span className="offer__user-name">{data.host.name}</span>
+                      {data.host.isPro && (
                         <span className="offer__user-status">Pro</span>
                       )}
                     </div>
                     <div className="offer__description">
-                      <p className="offer__text">{offer.description}</p>
+                      <p className="offer__text">{data.description}</p>
                     </div>
                   </div>
                   <section className="offer__reviews reviews">
                     <CommentList comments={comments} />
-                    {authorizationStatus === 'AUTH' && (
+                    {authStatus === 'AUTH' && (
                       <CommentForm onSubmit={handleFormSubmit} />
                     )}
                   </section>
@@ -167,7 +157,7 @@ export const Offer = () => {
               <Map
                 className="offer__map map"
                 style={{ backgroundImage: 'none' }}
-                city={offer.city}
+                city={data.city}
                 points={nearbyOffers.map(getPointFromOffer)}
                 selectedPoint={hoveredOffer?.id}
               />
