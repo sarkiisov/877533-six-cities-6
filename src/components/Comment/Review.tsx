@@ -1,8 +1,8 @@
-import { ReviewProps } from './Review.types';
+import { CommentProps } from './Review.types';
 
-export const Review = ({
-  review: { date, comment, rating, user },
-}: ReviewProps) => (
+export const Comment = ({
+  comment: { date, comment, rating, user },
+}: CommentProps) => (
   <li className="reviews__item">
     <div className="reviews__user user">
       <div className="reviews__avatar-wrapper user__avatar-wrapper">

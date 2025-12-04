@@ -8,13 +8,16 @@ import { Favorites } from '../pages/Favorites';
 import { Offer } from '../pages/Offer';
 
 import { offers } from '../mocks/offers';
+import { AuthLayout } from '../layouts/AuthLayout/AuthLayout';
 
 export const RouterProvider = () => (
   <BrowserRouter>
     <Routes>
       <Route element={<GlobalLayout />}>
         <Route path="/" element={<Main />} />
-        <Route path="/login" element={<Login />} />
+        <Route element={<AuthLayout />}>
+          <Route path="/login" element={<Login />} />
+        </Route>
         <Route element={<PrivateLayout />}>
           <Route path="/favorites" element={<Favorites offers={offers} />} />
         </Route>

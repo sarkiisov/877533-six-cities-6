@@ -9,6 +9,8 @@ export type City = {
   location: Location;
 };
 
+export type OfferType = 'apartment' | 'room' | 'house' | 'hotel';
+
 export type Offer = {
   id: string;
   title: string;
@@ -22,6 +24,28 @@ export type Offer = {
   rating: number;
 };
 
+export type OfferExtended = {
+  id: string;
+  title: string;
+  type: OfferType;
+  price: number;
+  city: City;
+  location: Location;
+  isFavorite: boolean;
+  isPremium: boolean;
+  rating: number;
+  description: string;
+  bedrooms: number;
+  goods: string[];
+  host: {
+    avatarUrl: string;
+    isPro: boolean;
+    name: string;
+  };
+  images: string[];
+  maxAdults: number;
+};
+
 export type Point = {
   id: string;
   title: string;
@@ -29,7 +53,7 @@ export type Point = {
   longitude: number;
 };
 
-export type Review = {
+export type Comment = {
   id: string;
   date: string;
   user: {

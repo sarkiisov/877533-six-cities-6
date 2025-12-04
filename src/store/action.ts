@@ -1,5 +1,12 @@
 import { createAction } from '@reduxjs/toolkit';
-import { AuthInfo, AuthorizationStatus, City, Offer } from '../types';
+import {
+  AuthInfo,
+  AuthorizationStatus,
+  City,
+  Comment,
+  Offer,
+  OfferExtended,
+} from '../types';
 
 export const actions = {
   setCity: createAction<City>('city/set'),
@@ -11,6 +18,13 @@ export const actions = {
     'user/requireAuthorization'
   ),
   setAuthInfo: createAction<AuthInfo | null>('user/setAuthInfo'),
+  loadOfferRequest: createAction('offer/loadOfferRequest'),
+  loadOfferSuccess: createAction<OfferExtended>('offer/loadOfferSuccess'),
+  loadOfferError: createAction('offer/loadOfferError'),
+  loadNearbyOffersSuccess: createAction<Offer[]>(
+    'offer/loadNearbyOffersSuccess'
+  ),
+  loadCommentsSuccess: createAction<Comment[]>('offer/loadCommentsSuccess'),
 };
 
 export type Actions = ReturnType<(typeof actions)[keyof typeof actions]>;

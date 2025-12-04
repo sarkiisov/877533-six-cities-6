@@ -1,6 +1,6 @@
 export type CommentFormData = {
   rating: number;
-  review: string;
+  comment: string;
 };
 
 export type CommentFormProps = Omit<
