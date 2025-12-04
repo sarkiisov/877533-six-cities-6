@@ -4,20 +4,22 @@ import { Link } from 'react-router-dom';
 import { Map } from '../../components/Map';
 import { CityList } from '../../components/CityList';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../store';
-import { setCity } from '../../store/action';
-import { useMemo, useState } from 'react';
+import { Dispatch, RootState } from '../../store';
+import { actions } from '../../store/action';
+import { useEffect, useMemo, useState } from 'react';
 import { cities } from '../../mocks';
 import { City, Offer } from '../../types';
 import { getPointFromOffer } from '../../utils/offer';
+import { fetchOffers } from '../../store/api-action';
 import { OfferSort } from '../../components/OfferSort';
+import { Loader } from '../../components/Loader';
 
 export const Main = () => {
   const [hoveredOffer, setHoveredOffer] = useState<Offer | null>(null);
 
-  const { offers, city } = useSelector((state: RootState) => state);
+  const dispatch = useDispatch<Dispatch>();
 
-  const dispatch = useDispatch();
+  const { offers, city, isLoading } = useSelector((state: RootState) => state);
 
   const filteredOffers = useMemo(
     () => offers.filter((offer) => offer.city.name === city.name),
@@ -25,8 +27,12 @@ export const Main = () => {
   );
 
   const handleCityChange = (nextCity: City) => {
-    dispatch(setCity(nextCity));
+    dispatch(actions.setCity(nextCity));
   };
+
+  useEffect(() => {
+    dispatch(fetchOffers());
+  }, [dispatch]);
 
   return (
     <div className="page page--gray page--main">
@@ -68,7 +74,6 @@ export const Main = () => {
           </div>
         </div>
       </header>
-
       <main
         className={clsx('page__main page__main--index', {
           'page__main--index-empty': !filteredOffers.length,
@@ -81,7 +86,8 @@ export const Main = () => {
           activeCity={city}
         />
         <div className="cities">
-          {filteredOffers.length ? (
+          {isLoading && <Loader />}
+          {!isLoading && (filteredOffers.length ? (
             <div className="cities__places-container container">
               <section className="cities__places places">
                 <h2 className="visually-hidden">Places</h2>
@@ -120,7 +126,7 @@ export const Main = () => {
               </section>
               <div className="cities__right-section"></div>
             </div>
-          )}
+          ))}
         </div>
       </main>
     </div>
