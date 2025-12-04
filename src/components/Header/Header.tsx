@@ -1,9 +1,10 @@
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { Dispatch, RootState } from '../../store';
 import { Link, useNavigate } from 'react-router-dom';
-import { logout } from '../../store/api-action';
+import { logout } from '../../store/api-actions';
+import { memo } from 'react';
 
-export const Header = () => {
+export const Header = memo(() => {
   const dispatch = useDispatch<Dispatch>();
 
   const { authorizationStatus, authInfo } = useSelector(
@@ -93,4 +94,6 @@ export const Header = () => {
       </div>
     </header>
   );
-};
+});
+
+Header.displayName = 'Header';

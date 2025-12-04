@@ -8,10 +8,11 @@ import { getPointFromOffer } from '../../utils/offer';
 import { Header } from '../../components/Header';
 import { Navigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { fetchOffer, postComment } from '../../store/api-action';
+import { fetchOffer, postComment } from '../../store/api-actions';
 import { capitalize } from '../../utils/string';
 import { Offer as OfferType } from '../../types';
 import { Loader } from '../../components/Loader';
+import { Footer } from '../../components/Footer';
 
 export const Offer = () => {
   const { id } = useParams() as { id: string };
@@ -44,9 +45,10 @@ export const Offer = () => {
   };
 
   useEffect(() => {
-    if (id) {
-      dispatch(fetchOffer(id));
+    if (!id) {
+      return;
     }
+    dispatch(fetchOffer(id));
   }, [id, dispatch]);
 
   if (isOfferError) {
@@ -187,6 +189,7 @@ export const Offer = () => {
           </>
         )}
       </main>
+      <Footer />
     </div>
   );
 };
