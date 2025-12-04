@@ -2,7 +2,7 @@ import { Fragment, useState } from 'react';
 import { CommentFormData, CommentFormProps } from './CommentForm.types';
 import clsx from 'clsx';
 
-const fallbackDefaultValues: CommentFormData = { rating: 4, review: '' };
+const fallbackDefaultValues: CommentFormData = { rating: 4, comment: '' };
 
 export const CommentForm = ({
   defaultValues,
@@ -15,7 +15,8 @@ export const CommentForm = ({
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const isSubmitDisabled = isSubmitting || !formData.rating || !formData.review;
+  const isSubmitDisabled =
+    isSubmitting || !formData.rating || !formData.comment;
 
   const handleFieldChange = (
     event: React.ChangeEvent,
@@ -80,10 +81,11 @@ export const CommentForm = ({
       <textarea
         readOnly={isSubmitting}
         className="reviews__textarea form__textarea"
-        id="review"
-        name="review"
+        id="comment"
+        name="comment"
+        minLength={50}
         placeholder="Tell how was your stay, what you like and what can be improved"
-        value={formData.review}
+        value={formData.comment}
         onChange={handleFieldChange}
       />
       <div className="reviews__button-wrapper">

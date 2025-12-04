@@ -1,6 +1,13 @@
 import { createReducer } from '@reduxjs/toolkit';
 import { actions } from './action';
-import { AuthInfo, AuthorizationStatus, City, Offer } from '../types';
+import {
+  AuthInfo,
+  AuthorizationStatus,
+  City,
+  Comment,
+  Offer,
+  OfferExtended,
+} from '../types';
 import { cities } from '../mocks';
 
 export interface State {
@@ -10,6 +17,11 @@ export interface State {
   isError: boolean;
   authorizationStatus: AuthorizationStatus;
   authInfo: AuthInfo | null;
+  offer: OfferExtended | null;
+  nearbyOffers: Offer[];
+  comments: Comment[];
+  isOfferLoading: boolean;
+  isOfferError: boolean;
 }
 
 const initialState: State = {
@@ -19,6 +31,11 @@ const initialState: State = {
   isError: false,
   authorizationStatus: 'UNKNOWN',
   authInfo: null,
+  offer: null,
+  nearbyOffers: [],
+  comments: [],
+  isOfferLoading: false,
+  isOfferError: false,
 };
 
 export const reducer = createReducer(initialState, (builder) => {
@@ -46,5 +63,26 @@ export const reducer = createReducer(initialState, (builder) => {
     })
     .addCase(actions.setAuthInfo, (state, action) => {
       state.authInfo = action.payload;
+    })
+    .addCase(actions.loadOfferRequest, (state) => {
+      state.isOfferLoading = true;
+      state.isOfferError = false;
+      state.offer = null;
+      state.nearbyOffers = [];
+      state.comments = [];
+    })
+    .addCase(actions.loadOfferSuccess, (state, action) => {
+      state.isOfferLoading = false;
+      state.offer = action.payload;
+    })
+    .addCase(actions.loadOfferError, (state) => {
+      state.isOfferLoading = false;
+      state.isOfferError = true;
+    })
+    .addCase(actions.loadNearbyOffersSuccess, (state, action) => {
+      state.nearbyOffers = action.payload;
+    })
+    .addCase(actions.loadCommentsSuccess, (state, action) => {
+      state.comments = action.payload;
     });
 });
