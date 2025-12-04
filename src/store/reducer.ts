@@ -1,8 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
-import {
-  actions
-} from './action';
-import { City, Offer } from '../types';
+import { actions } from './action';
+import { AuthInfo, AuthorizationStatus, City, Offer } from '../types';
 import { cities } from '../mocks';
 
 export interface State {
@@ -10,6 +8,8 @@ export interface State {
   offers: Offer[];
   isLoading: boolean;
   isError: boolean;
+  authorizationStatus: AuthorizationStatus;
+  authInfo: AuthInfo | null;
 }
 
 const initialState: State = {
@@ -17,6 +17,8 @@ const initialState: State = {
   offers: [],
   isLoading: false,
   isError: false,
+  authorizationStatus: 'UNKNOWN',
+  authInfo: null,
 };
 
 export const reducer = createReducer(initialState, (builder) => {
@@ -38,5 +40,11 @@ export const reducer = createReducer(initialState, (builder) => {
     .addCase(actions.loadOffersError, (state) => {
       state.isLoading = false;
       state.isError = true;
+    })
+    .addCase(actions.requireAuthorization, (state, action) => {
+      state.authorizationStatus = action.payload;
+    })
+    .addCase(actions.setAuthInfo, (state, action) => {
+      state.authInfo = action.payload;
     });
 });

@@ -38,5 +38,15 @@ export type Review = {
     isPro: boolean;
   };
   comment: string;
-  rating: 4;
+  rating: number;
+};
+
+export type AuthorizationStatus = 'AUTH' | 'NO_AUTH' | 'UNKNOWN';
+
+export type AuthInfo = {
+  name: string;
+  avatarUrl: string;
+  isPro: boolean;
+  email: string;
+  token: string;
 };
