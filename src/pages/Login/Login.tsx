@@ -2,15 +2,15 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Dispatch } from '../../store';
 import { useDispatch } from 'react-redux';
 import { LoginForm, LoginFormData } from '../../components/LoginForm';
-import { login } from '../../store/api-action';
+import { login } from '../../store/api-actions';
 
 export const Login = () => {
   const dispatch = useDispatch<Dispatch>();
 
   const navigate = useNavigate();
 
-  const handleFormSubmit = async ({ email, password }: LoginFormData) => {
-    await dispatch(login({ email, password }));
+  const handleFormSubmit = async (data: LoginFormData) => {
+    await dispatch(login(data));
     navigate('/');
   };
 
@@ -33,7 +33,6 @@ export const Login = () => {
           </div>
         </div>
       </header>
-
       <main className="page__main page__main--login">
         <div className="page__login-container container">
           <section className="login">

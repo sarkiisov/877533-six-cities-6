@@ -1,15 +1,15 @@
 /* eslint-disable no-empty */
 
 import { ThunkAction, ThunkDispatch } from 'redux-thunk';
-import { State } from './reducer';
-import { actions, Actions } from './action';
+import { actions, Actions } from './actions';
 import { AuthInfo, Comment, Offer, OfferExtended } from '../types';
 import { AxiosInstance } from 'axios';
+import { RootState } from '.';
 
 export const fetchOffers =
-  (): ThunkAction<Promise<void>, State, AxiosInstance, Actions> =>
+  (): ThunkAction<Promise<void>, RootState, AxiosInstance, Actions> =>
     async (
-      dispatch: ThunkDispatch<State, AxiosInstance, Actions>,
+      dispatch: ThunkDispatch<RootState, AxiosInstance, Actions>,
       _getState,
       api
     ) => {
@@ -23,9 +23,9 @@ export const fetchOffers =
     };
 
 export const fetchOffer =
-  (id: string): ThunkAction<Promise<void>, State, AxiosInstance, Actions> =>
+  (id: string): ThunkAction<Promise<void>, RootState, AxiosInstance, Actions> =>
     async (
-      dispatch: ThunkDispatch<State, AxiosInstance, Actions>,
+      dispatch: ThunkDispatch<RootState, AxiosInstance, Actions>,
       _getState,
       api
     ) => {
@@ -49,7 +49,7 @@ export const postComment =
   (
     offerId: string,
     comment: { comment: string; rating: number }
-  ): ThunkAction<Promise<void>, State, AxiosInstance, Actions> =>
+  ): ThunkAction<Promise<void>, RootState, AxiosInstance, Actions> =>
     async (dispatch, _getState, api) => {
       try {
         await api.post<Comment>(`/comments/${offerId}`, comment);
@@ -61,19 +61,19 @@ export const postComment =
     };
 
 export const checkAuth =
-  (): ThunkAction<Promise<void>, State, AxiosInstance, Actions> =>
+  (): ThunkAction<Promise<void>, RootState, AxiosInstance, Actions> =>
     async (
-      dispatch: ThunkDispatch<State, AxiosInstance, Actions>,
+      dispatch: ThunkDispatch<RootState, AxiosInstance, Actions>,
       _getState,
       api
     ) => {
       try {
         const { data } = await api.get<AuthInfo>('/login');
 
-        dispatch(actions.requireAuthorization('AUTH'));
+        dispatch(actions.requireAuth('AUTH'));
         dispatch(actions.setAuthInfo(data));
       } catch {
-        dispatch(actions.requireAuthorization('NO_AUTH'));
+        dispatch(actions.requireAuth('NO_AUTH'));
         dispatch(actions.setAuthInfo(null));
       }
     };
@@ -82,26 +82,26 @@ export const login =
   (loginData: {
     email: string;
     password: string;
-  }): ThunkAction<Promise<void>, State, AxiosInstance, Actions> =>
+  }): ThunkAction<Promise<void>, RootState, AxiosInstance, Actions> =>
     async (dispatch, _getState, api) => {
       try {
         const { data } = await api.post<AuthInfo>('/login', loginData);
 
         localStorage.setItem('token', data.token);
 
-        dispatch(actions.requireAuthorization('AUTH'));
+        dispatch(actions.requireAuth('AUTH'));
         dispatch(actions.setAuthInfo(data));
       } catch (err) {
-        dispatch(actions.requireAuthorization('NO_AUTH'));
+        dispatch(actions.requireAuth('NO_AUTH'));
         dispatch(actions.setAuthInfo(null));
         throw err;
       }
     };
 
 export const logout =
-  (): ThunkAction<Promise<void>, State, AxiosInstance, Actions> =>
+  (): ThunkAction<Promise<void>, RootState, AxiosInstance, Actions> =>
     async (
-      dispatch: ThunkDispatch<State, AxiosInstance, Actions>,
+      dispatch: ThunkDispatch<RootState, AxiosInstance, Actions>,
       _getState,
       api: AxiosInstance
     ) => {
@@ -110,6 +110,6 @@ export const logout =
       } catch {}
       localStorage.removeItem('token');
 
-      dispatch(actions.requireAuthorization('NO_AUTH'));
+      dispatch(actions.requireAuth('NO_AUTH'));
       dispatch(actions.setAuthInfo(null));
     };

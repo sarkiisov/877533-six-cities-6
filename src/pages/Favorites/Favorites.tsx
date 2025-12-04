@@ -1,8 +1,8 @@
 import { FavoritesProps } from './Favorites.types';
 import { OfferCardList } from '../../components/OfferCardList';
-import clsx from 'clsx';
-import { Link } from 'react-router-dom';
 import { Header } from '../../components/Header';
+import { Footer } from '../../components/Footer';
+import clsx from 'clsx';
 
 export const Favorites = ({ offers }: FavoritesProps) => (
   <div
@@ -39,16 +39,6 @@ export const Favorites = ({ offers }: FavoritesProps) => (
         </div>
       )}
     </main>
-    <footer className="footer container">
-      <Link className="footer__logo-link" to="/">
-        <img
-          className="footer__logo"
-          src="img/logo.svg"
-          alt="6 cities logo"
-          width="64"
-          height="33"
-        />
-      </Link>
-    </footer>
+    <Footer />
   </div>
 );

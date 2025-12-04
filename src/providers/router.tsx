@@ -1,14 +1,13 @@
 import { GlobalLayout } from '../layouts/GlobalLayout';
 import { PrivateLayout } from '../layouts/PrivateLayout';
+import { AuthLayout } from '../layouts/AuthLayout/AuthLayout';
 import { Main } from '../pages/Main/Main';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { NotFound } from '../pages/NotFound';
 import { Login } from '../pages/Login';
 import { Favorites } from '../pages/Favorites';
 import { Offer } from '../pages/Offer';
-
 import { offers } from '../mocks/offers';
-import { AuthLayout } from '../layouts/AuthLayout/AuthLayout';
 
 export const RouterProvider = () => (
   <BrowserRouter>

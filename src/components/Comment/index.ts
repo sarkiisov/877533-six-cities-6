@@ -1,2 +1,2 @@
-export * from './Review';
-export * from './Review.types';
+export * from './Comment';
+export * from './Comment.types';

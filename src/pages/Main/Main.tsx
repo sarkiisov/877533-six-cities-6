@@ -1,36 +1,32 @@
 import { OfferCardList } from '../../components/OfferCardList';
 import { Map } from '../../components/Map';
 import { CityList } from '../../components/CityList';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { Dispatch, RootState } from '../../store';
-import { actions } from '../../store/action';
+import { useDispatch, useSelector } from 'react-redux';
+import { Dispatch } from '../../store';
+import { actions } from '../../store/actions';
 import { useEffect, useMemo, useState } from 'react';
 import { cities } from '../../mocks';
 import { City, Offer } from '../../types';
 import { getPointFromOffer } from '../../utils/offer';
-import { fetchOffers } from '../../store/api-action';
+import { fetchOffers } from '../../store/api-actions';
 import { OfferSort } from '../../components/OfferSort';
 import { Loader } from '../../components/Loader';
 import { Header } from '../../components/Header';
 import clsx from 'clsx';
+import { getCity, getOffersData } from '../../store/selectors';
+import { Navigate } from 'react-router-dom';
 
 export const Main = () => {
   const [hoveredOffer, setHoveredOffer] = useState<Offer | null>(null);
 
   const dispatch = useDispatch<Dispatch>();
 
-  const { offers, city, isLoading } = useSelector(
-    (state: RootState) => ({
-      offers: state.offers,
-      city: state.city,
-      isLoading: state.isLoading,
-    }),
-    shallowEqual
-  );
+  const city = useSelector(getCity);
+  const { data, isLoading, isError } = useSelector(getOffersData);
 
   const filteredOffers = useMemo(
-    () => offers.filter((offer) => offer.city.name === city.name),
-    [offers, city]
+    () => data.filter((item) => item.city.name === city.name),
+    [data, city]
   );
 
   const handleCityChange = (nextCity: City) => {
@@ -40,6 +36,10 @@ export const Main = () => {
   useEffect(() => {
     dispatch(fetchOffers());
   }, [dispatch]);
+
+  if (isError) {
+    return <Navigate to="/404" />;
+  }
 
   return (
     <div className="page page--gray page--main">

@@ -1,4 +1,4 @@
-import { CommentProps } from './Review.types';
+import { CommentProps } from './Comment.types';
 
 export const Comment = ({
   comment: { date, comment, rating, user },

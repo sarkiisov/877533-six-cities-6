@@ -2,7 +2,7 @@ import { useDispatch } from 'react-redux';
 import { Outlet } from 'react-router-dom';
 import { Dispatch } from '../../store';
 import { useEffect } from 'react';
-import { checkAuth } from '../../store/api-action';
+import { checkAuth } from '../../store/api-actions';
 
 export const GlobalLayout = () => {
   const dispatch = useDispatch<Dispatch>();
