@@ -8,7 +8,11 @@ import { getPointFromOffer } from '../../utils/offer';
 import { Header } from '../../components/Header';
 import { Navigate, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { fetchOffer, postComment } from '../../store/api-actions';
+import {
+  fetchOffer,
+  postComment,
+  toggleFavoriteOffer,
+} from '../../store/api-actions';
 import { capitalize } from '../../utils/string';
 import { Offer as OfferType } from '../../types';
 import { Loader } from '../../components/Loader';
@@ -19,21 +23,32 @@ import {
   getNearbyOffers,
   getOfferData,
 } from '../../store/selectors';
+import clsx from 'clsx';
 
 export const Offer = () => {
   const { id } = useParams() as { id: string };
 
   const [hoveredOffer, setHoveredOffer] = useState<OfferType | null>(null);
+  const [isFavoriteLoading, setIsFavoriteLoading] = useState(false);
 
   const dispatch = useDispatch<Dispatch>();
 
   const authStatus = useSelector(getAuthStatus);
-  const { data, isLoading, isError } = useSelector(getOfferData);
+  const { offer, isLoading, isError } = useSelector(getOfferData);
   const nearbyOffers = useSelector(getNearbyOffers);
   const comments = useSelector(getComments);
 
   const handleFormSubmit = (comment: CommentFormData) => {
     dispatch(postComment(id, comment));
+  };
+
+  const handleToggleFavoriteClick = async (isFavorite: boolean) => {
+    setIsFavoriteLoading(true);
+    try {
+      await dispatch(toggleFavoriteOffer(id, isFavorite));
+    } finally {
+      setIsFavoriteLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -52,12 +67,12 @@ export const Offer = () => {
       <Header />
       <main className="page__main page__main--offer">
         {isLoading && <Loader />}
-        {!isError && data && (
+        {!isError && offer && (
           <>
             <section className="offer">
               <div className="offer__gallery-container container">
                 <div className="offer__gallery">
-                  {data.images.map((image) => (
+                  {offer.images.map((image) => (
                     <div key={image} className="offer__image-wrapper">
                       <img
                         className="offer__image"
@@ -70,15 +85,21 @@ export const Offer = () => {
               </div>
               <div className="offer__container container">
                 <div className="offer__wrapper">
-                  {data.isPremium && (
+                  {offer.isPremium && (
                     <div className="offer__mark">
                       <span>Premium</span>
                     </div>
                   )}
                   <div className="offer__name-wrapper">
-                    <h1 className="offer__name">{data.title}</h1>
+                    <h1 className="offer__name">{offer.title}</h1>
                     <button
-                      className="offer__bookmark-button button"
+                      onClick={() =>
+                        void handleToggleFavoriteClick(!offer.isFavorite)}
+                      disabled={isFavoriteLoading}
+                      className={clsx(
+                        'offer__bookmark-button button',
+                        offer.isFavorite && 'offer__bookmark-button--active'
+                      )}
                       type="button"
                     >
                       <svg
@@ -93,32 +114,32 @@ export const Offer = () => {
                   </div>
                   <div className="offer__rating rating">
                     <div className="offer__stars rating__stars">
-                      <span style={{ width: `${data.rating * 20}%` }}></span>
+                      <span style={{ width: `${offer.rating * 20}%` }}></span>
                       <span className="visually-hidden">Rating</span>
                     </div>
                     <span className="offer__rating-value rating__value">
-                      {Math.round(data.rating)}
+                      {Math.round(offer.rating)}
                     </span>
                   </div>
                   <ul className="offer__features">
                     <li className="offer__feature offer__feature--entire">
-                      {capitalize(data.type)}
+                      {capitalize(offer.type)}
                     </li>
                     <li className="offer__feature offer__feature--bedrooms">
-                      {data.bedrooms} Bedroom(-s)
+                      {offer.bedrooms} Bedroom(-s)
                     </li>
                     <li className="offer__feature offer__feature--adults">
-                      Max {data.maxAdults} adult(-s)
+                      Max {offer.maxAdults} adult(-s)
                     </li>
                   </ul>
                   <div className="offer__price">
-                    <b className="offer__price-value">&euro;{data.price}</b>
+                    <b className="offer__price-value">&euro;{offer.price}</b>
                     <span className="offer__price-text">&nbsp;night</span>
                   </div>
                   <div className="offer__inside">
                     <h2 className="offer__inside-title">What&apos;s inside</h2>
                     <ul className="offer__inside-list">
-                      {data.goods.map((good) => (
+                      {offer.goods.map((good) => (
                         <li key={good} className="offer__inside-item">
                           {good}
                         </li>
@@ -131,19 +152,21 @@ export const Offer = () => {
                       <div className="offer__avatar-wrapper offer__avatar-wrapper--pro user__avatar-wrapper">
                         <img
                           className="offer__avatar user__avatar"
-                          src={data.host.avatarUrl}
+                          src={offer.host.avatarUrl}
                           width="74"
                           height="74"
                           alt="Host avatar"
                         />
                       </div>
-                      <span className="offer__user-name">{data.host.name}</span>
-                      {data.host.isPro && (
+                      <span className="offer__user-name">
+                        {offer.host.name}
+                      </span>
+                      {offer.host.isPro && (
                         <span className="offer__user-status">Pro</span>
                       )}
                     </div>
                     <div className="offer__description">
-                      <p className="offer__text">{data.description}</p>
+                      <p className="offer__text">{offer.description}</p>
                     </div>
                   </div>
                   <section className="offer__reviews reviews">
@@ -157,7 +180,7 @@ export const Offer = () => {
               <Map
                 className="offer__map map"
                 style={{ backgroundImage: 'none' }}
-                city={data.city}
+                city={offer.city}
                 points={nearbyOffers.map(getPointFromOffer)}
                 selectedPoint={hoveredOffer?.id}
               />

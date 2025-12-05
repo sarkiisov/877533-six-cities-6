@@ -9,7 +9,7 @@ export const getOffersErrorStatus = (state: RootState) => state.offers.isError;
 export const getOffersData = createSelector(
   [getOffers, getOffersLoadingStatus, getOffersErrorStatus],
   (offers, isLoading, isError) => ({
-    data: offers,
+    offers,
     isLoading,
     isError,
   })

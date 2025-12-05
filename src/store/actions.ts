@@ -15,6 +15,12 @@ export const loadOffersRequest = createAction('offers/loadRequest');
 export const loadOffersSuccess = createAction<Offer[]>('offers/loadSuccess');
 export const loadOffersError = createAction('offers/loadError');
 
+export const loadFavoritesRequest = createAction('favorites/loadRequest');
+export const loadFavoritesSuccess = createAction<Offer[]>(
+  'favorites/loadSuccess'
+);
+export const loadFavoritesError = createAction('favorites/loadError');
+
 export const loadOfferRequest = createAction('offer/loadOfferRequest');
 export const loadOfferSuccess = createAction<OfferExtended>(
   'offer/loadOfferSuccess'
@@ -36,6 +42,9 @@ export const actions = {
   loadOffersRequest,
   loadOffersSuccess,
   loadOffersError,
+  loadFavoritesRequest,
+  loadFavoritesSuccess,
+  loadFavoritesError,
   requireAuth,
   setAuthInfo,
   loadOfferRequest,

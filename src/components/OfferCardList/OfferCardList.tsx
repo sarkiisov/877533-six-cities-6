@@ -1,31 +1,27 @@
 import { OfferCard } from '../OfferCard';
 import { OfferCardListProps } from './OfferCardList.types';
 import { Offer } from '../../types';
-
-const getGroupedOffers = (offers: Offer[]) => {
-  if (!offers.length) {
-    return {};
-  }
-
-  const offersByCities: Record<string, Offer[]> = {};
-
-  offers.forEach((offer) => {
-    const cityName = offer.city.name;
-    if (offersByCities[cityName]) {
-      offersByCities[cityName].push(offer);
-    } else {
-      offersByCities[cityName] = [];
-    }
-  });
-
-  return offersByCities;
-};
+import { useCallback } from 'react';
+import { getGroupedOffers } from '../../utils/offer';
 
 export const OfferCardList = ({
   offers,
   orientation,
   onOfferHover,
+  onOfferToggleFavorite,
 }: OfferCardListProps) => {
+  const getOfferCardProps = useCallback(
+    (offer: Offer) => ({
+      onToggleFavorite: (isFavorite: boolean) =>
+        onOfferToggleFavorite?.(offer, isFavorite) || Promise.resolve(),
+      onMouseEnter: () => onOfferHover?.(offer),
+      onMouseLeave: () => onOfferHover?.(null),
+
+      offer: offer,
+    }),
+    [onOfferHover, onOfferToggleFavorite]
+  );
+
   if (orientation === 'horizontal') {
     const groupedOffers = getGroupedOffers(offers);
 
@@ -41,10 +37,8 @@ export const OfferCardList = ({
         <div className="favorites__places">
           {groupedOffers[cityName].map((offer) => (
             <OfferCard
-              onMouseEnter={() => onOfferHover?.(offer)}
-              onMouseLeave={() => onOfferHover?.(null)}
+              {...getOfferCardProps(offer)}
               key={offer.id}
-              offer={offer}
               orientation="horizontal"
             />
           ))}
@@ -55,10 +49,8 @@ export const OfferCardList = ({
   if (orientation === 'vertical') {
     return offers.map((offer) => (
       <OfferCard
-        onMouseEnter={() => onOfferHover?.(offer)}
-        onMouseLeave={() => onOfferHover?.(null)}
         key={offer.id}
-        offer={offer}
+        {...getOfferCardProps(offer)}
         orientation="vertical"
       />
     ));

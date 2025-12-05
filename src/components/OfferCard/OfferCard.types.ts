@@ -10,4 +10,5 @@ export type OfferCardProps = React.DetailedHTMLProps<
 > & {
   offer: Offer;
   orientation: OfferCardOrientation;
+  onToggleFavorite?: (isFavorite: boolean) => Promise<void>;
 };
