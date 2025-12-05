@@ -1,7 +1,7 @@
 import { createReducer } from '@reduxjs/toolkit';
 import { City } from '../../types';
-import { cities } from '../../mocks';
 import { setCity } from '../actions';
+import { cities } from '../../utils/consts';
 
 export interface CityState {
   city: City;

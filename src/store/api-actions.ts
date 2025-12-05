@@ -45,6 +45,43 @@ export const fetchOffer =
       }
     };
 
+export const fetchFavorites =
+  (): ThunkAction<Promise<void>, RootState, AxiosInstance, Actions> =>
+    async (
+      dispatch: ThunkDispatch<RootState, AxiosInstance, Actions>,
+      _getState,
+      api
+    ) => {
+      dispatch(actions.loadFavoritesRequest());
+
+      try {
+        const { data } = await api.get<Offer[]>('/favorite');
+        dispatch(actions.loadFavoritesSuccess(data));
+      } catch (error) {
+        dispatch(actions.loadFavoritesError());
+        throw error;
+      }
+    };
+
+export const toggleFavoriteOffer =
+  (
+    offerId: string,
+    isFavorite: boolean
+  ): ThunkAction<Promise<void>, RootState, AxiosInstance, Actions> =>
+    async (dispatch, getState, api) => {
+      const status = isFavorite ? 1 : 0;
+      await api.post<Offer>(`/favorite/${offerId}/${status}`);
+
+      const promises = [dispatch(fetchOffers()), dispatch(fetchFavorites())];
+
+      const state = getState();
+      if (state.offer.offer?.id === offerId) {
+        promises.push(dispatch(fetchOffer(offerId)));
+      }
+
+      await Promise.all(promises);
+    };
+
 export const postComment =
   (
     offerId: string,
@@ -72,9 +109,10 @@ export const checkAuth =
 
         dispatch(actions.requireAuth('AUTH'));
         dispatch(actions.setAuthInfo(data));
-      } catch {
+      } catch (err) {
         dispatch(actions.requireAuth('NO_AUTH'));
         dispatch(actions.setAuthInfo(null));
+        throw err;
       }
     };
 

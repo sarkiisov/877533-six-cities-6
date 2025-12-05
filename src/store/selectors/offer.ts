@@ -11,7 +11,7 @@ export const getOfferErrorStatus = (state: RootState) => state.offer.isError;
 export const getOfferData = createSelector(
   [getCurrentOffer, getOfferLoadingStatus, getOfferErrorStatus],
   (offer, isLoading, isError) => ({
-    data: offer,
+    offer,
     isLoading,
     isError,
   })

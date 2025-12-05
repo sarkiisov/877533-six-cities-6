@@ -4,12 +4,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import { logout } from '../../store/api-actions';
 import { memo } from 'react';
 import { getAuthInfo, getAuthStatus } from '../../store/selectors';
+import { getFavoritesCount } from '../../store/selectors/favorites';
 
 export const Header = memo(() => {
   const dispatch = useDispatch<Dispatch>();
 
   const authStatus = useSelector(getAuthStatus);
   const authInfo = useSelector(getAuthInfo);
+  const favoritesCount = useSelector(getFavoritesCount);
 
   const navigate = useNavigate();
 
@@ -54,7 +56,9 @@ export const Header = memo(() => {
                     <span className="header__user-name user__name">
                       {authInfo?.email}
                     </span>
-                    <span className="header__favorite-count">3</span>
+                    <span className="header__favorite-count">
+                      {favoritesCount}
+                    </span>
                   </Link>
                 </li>
               )}

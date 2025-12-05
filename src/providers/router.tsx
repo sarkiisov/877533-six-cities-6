@@ -7,7 +7,6 @@ import { NotFound } from '../pages/NotFound';
 import { Login } from '../pages/Login';
 import { Favorites } from '../pages/Favorites';
 import { Offer } from '../pages/Offer';
-import { offers } from '../mocks/offers';
 
 export const RouterProvider = () => (
   <BrowserRouter>
@@ -18,7 +17,7 @@ export const RouterProvider = () => (
           <Route path="/login" element={<Login />} />
         </Route>
         <Route element={<PrivateLayout />}>
-          <Route path="/favorites" element={<Favorites offers={offers} />} />
+          <Route path="/favorites" element={<Favorites />} />
         </Route>
         <Route path="/offer/:id" element={<Offer />} />
         <Route path="*" element={<NotFound />} />

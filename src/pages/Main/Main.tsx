@@ -5,16 +5,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Dispatch } from '../../store';
 import { actions } from '../../store/actions';
 import { useEffect, useMemo, useState } from 'react';
-import { cities } from '../../mocks';
+import { cities } from '../../utils/consts';
 import { City, Offer } from '../../types';
 import { getPointFromOffer } from '../../utils/offer';
-import { fetchOffers } from '../../store/api-actions';
+import { fetchOffers, toggleFavoriteOffer } from '../../store/api-actions';
 import { OfferSort } from '../../components/OfferSort';
 import { Loader } from '../../components/Loader';
 import { Header } from '../../components/Header';
-import clsx from 'clsx';
 import { getCity, getOffersData } from '../../store/selectors';
 import { Navigate } from 'react-router-dom';
+import { OfferEmpty } from '../../components/OfferEmpty';
+import clsx from 'clsx';
 
 export const Main = () => {
   const [hoveredOffer, setHoveredOffer] = useState<Offer | null>(null);
@@ -22,15 +23,23 @@ export const Main = () => {
   const dispatch = useDispatch<Dispatch>();
 
   const city = useSelector(getCity);
-  const { data, isLoading, isError } = useSelector(getOffersData);
+
+  const { offers, isLoading, isError } = useSelector(getOffersData);
 
   const filteredOffers = useMemo(
-    () => data.filter((item) => item.city.name === city.name),
-    [data, city]
+    () => offers.filter((offer) => offer.city.name === city.name),
+    [offers, city]
   );
 
   const handleCityChange = (nextCity: City) => {
     dispatch(actions.setCity(nextCity));
+  };
+
+  const handleToggleFavoriteClick = async (
+    offer: Offer,
+    isFavorite: boolean
+  ) => {
+    await dispatch(toggleFavoriteOffer(offer.id, isFavorite));
   };
 
   useEffect(() => {
@@ -68,6 +77,7 @@ export const Main = () => {
                   <OfferSort />
                   <div className="cities__places-list places__list tabs__content">
                     <OfferCardList
+                      onOfferToggleFavorite={handleToggleFavoriteClick}
                       onOfferHover={setHoveredOffer}
                       offers={filteredOffers}
                       orientation="vertical"
@@ -85,20 +95,7 @@ export const Main = () => {
                 </div>
               </div>
             ) : (
-              <div className="cities__places-container cities__places-container--empty container">
-                <section className="cities__no-places">
-                  <div className="cities__status-wrapper tabs__content">
-                    <b className="cities__status">
-                      No places to stay available
-                    </b>
-                    <p className="cities__status-description">
-                      We could not find any property available at the moment in
-                      {city.name}
-                    </p>
-                  </div>
-                </section>
-                <div className="cities__right-section"></div>
-              </div>
+              <OfferEmpty city={city} />
             ))}
         </div>
       </main>

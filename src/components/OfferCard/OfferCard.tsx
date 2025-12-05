@@ -1,23 +1,17 @@
 import clsx from 'clsx';
 import { OfferCardClassNames, OfferCardProps } from './OfferCard.types';
 import { Link } from 'react-router-dom';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 export const OfferCard = ({
-  offer: {
-    id,
-    isPremium,
-    previewImage,
-    price,
-    isFavorite,
-    rating,
-    title,
-    type,
-  },
+  offer,
   className,
   orientation,
+  onToggleFavorite,
   ...props
 }: OfferCardProps) => {
+  const [isFavoriteLoading, setIsFavoriteLoading] = useState(false);
+
   const { previewImageWidth, previewImageHeight, classNames } = useMemo<{
     previewImageWidth: number;
     previewImageHeight: number;
@@ -46,12 +40,21 @@ export const OfferCard = ({
     [orientation]
   );
 
+  const handleToggleFavorite = async (isFavorite: boolean) => {
+    setIsFavoriteLoading(true);
+    try {
+      await onToggleFavorite?.(isFavorite);
+    } finally {
+      setIsFavoriteLoading(false);
+    }
+  };
+
   return (
     <article
       className={clsx('place-card', classNames.root, className)}
       {...props}
     >
-      {isPremium && (
+      {offer.isPremium && (
         <div className="place-card__mark">
           <span>Premium</span>
         </div>
@@ -59,10 +62,10 @@ export const OfferCard = ({
       <div
         className={clsx('place-card__image-wrapper', classNames.imageWrapper)}
       >
-        <Link to={`/offer/${id}`}>
+        <Link to={`/offer/${offer.id}`}>
           <img
             className="place-card__image"
-            src={previewImage}
+            src={offer.previewImage}
             width={previewImageWidth}
             height={previewImageHeight}
             alt="Place image"
@@ -72,13 +75,15 @@ export const OfferCard = ({
       <div className={clsx('place-card__info', classNames.info)}>
         <div className="place-card__price-wrapper">
           <div className="place-card__price">
-            <b className="place-card__price-value">&euro;{price}</b>
+            <b className="place-card__price-value">&euro;{offer.price}</b>
             <span className="place-card__price-text">&#47;&nbsp;night</span>
           </div>
 
           <button
+            onClick={() => void handleToggleFavorite(!offer.isFavorite)}
+            disabled={isFavoriteLoading}
             className={clsx('place-card__bookmark-button button', {
-              'place-card__bookmark-button--active': isFavorite,
+              'place-card__bookmark-button--active': offer.isFavorite,
             })}
             type="button"
           >
@@ -86,20 +91,20 @@ export const OfferCard = ({
               <use xlinkHref="#icon-bookmark"></use>
             </svg>
             <span className="visually-hidden">
-              {isFavorite ? 'In bookmarks' : 'To bookmarks'}
+              {offer.isFavorite ? 'In bookmarks' : 'To bookmarks'}
             </span>
           </button>
         </div>
         <div className="place-card__rating rating">
           <div className="place-card__stars rating__stars">
-            <span style={{ width: `${rating * 20}%` }}></span>
+            <span style={{ width: `${offer.rating * 20}%` }}></span>
             <span className="visually-hidden">Rating</span>
           </div>
         </div>
         <h2 className="place-card__name">
-          <Link to={`/offer/${id}`}>{title}</Link>
+          <Link to={`/offer/${offer.id}`}>{offer.title}</Link>
         </h2>
-        <p className="place-card__type">{type}</p>
+        <p className="place-card__type">{offer.type}</p>
       </div>
     </article>
   );
