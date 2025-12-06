@@ -1,12 +1,12 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { Offer, OfferExtended, Comment } from '../../types';
+import { Offer, OfferExtended, Comment } from '../../../types';
 import {
   loadOfferRequest,
   loadOfferSuccess,
   loadOfferError,
   loadNearbyOffersSuccess,
   loadCommentsSuccess,
-} from '../actions';
+} from '../../actions';
 
 export interface OfferState {
   offer: OfferExtended | null;

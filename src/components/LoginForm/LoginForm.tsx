@@ -1,3 +1,4 @@
+/* eslint-disable no-empty */
 import { useState } from 'react';
 import { LoginFormData, LoginFormProps } from './LoginForm.types';
 import clsx from 'clsx';
@@ -39,6 +40,7 @@ export const LoginForm = ({
       setIsSubmitting(true);
       await onSubmit?.(data);
       setFormData(fallbackDefaultValues);
+    } catch {
     } finally {
       setIsSubmitting(false);
     }
@@ -46,6 +48,7 @@ export const LoginForm = ({
 
   return (
     <form
+      role="form"
       className={clsx('login__form form', className)}
       onSubmit={(event) => void handleFormSubmit(event, formData)}
       {...props}
@@ -58,6 +61,7 @@ export const LoginForm = ({
           name="email"
           placeholder="Email"
           required
+          value={formData.email}
           onChange={(event) => handleFieldChange(event)}
         />
       </div>
@@ -69,10 +73,12 @@ export const LoginForm = ({
           name="password"
           placeholder="Password"
           required
+          value={formData.password}
           onChange={(event) => handleFieldChange(event)}
         />
       </div>
       <button
+        role="button"
         className="login__submit form__submit button"
         type="submit"
         disabled={isSubmitDisabled}

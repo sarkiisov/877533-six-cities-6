@@ -46,6 +46,7 @@ export const CommentForm = ({
 
   return (
     <form
+      role="form"
       className={clsx('reviews__form form', className)}
       onSubmit={(event) => void handleFormSubmit(event, formData)}
       {...props}
@@ -57,6 +58,7 @@ export const CommentForm = ({
         {Array.from({ length: 5 }, (_, i) => 5 - i).map((rating) => (
           <Fragment key={rating}>
             <input
+              role="radio"
               className="form__rating-input visually-hidden"
               name="rating"
               value={rating}
@@ -79,6 +81,7 @@ export const CommentForm = ({
         ))}
       </div>
       <textarea
+        role="textbox"
         readOnly={isSubmitting}
         className="reviews__textarea form__textarea"
         id="comment"
@@ -95,6 +98,7 @@ export const CommentForm = ({
           with at least <b className="reviews__text-amount">50 characters</b>.
         </p>
         <button
+          role="button"
           className="reviews__submit form__submit button"
           type="submit"
           disabled={isSubmitDisabled}

@@ -1,6 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { AuthInfo, AuthStatus } from '../../types';
-import { requireAuth, setAuthInfo } from '../actions';
+import { AuthInfo, AuthStatus } from '../../../types';
+import { requireAuth, setAuthInfo } from '../../actions';
 
 export interface AuthState {
   authStatus: AuthStatus;
