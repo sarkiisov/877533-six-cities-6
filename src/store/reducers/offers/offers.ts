@@ -1,11 +1,11 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { Offer } from '../../types';
+import { Offer } from '../../../types';
 import {
   loadOffersRequest,
   loadOffersSuccess,
   loadOffersError,
   setOffers,
-} from '../actions';
+} from '../../actions';
 
 export interface OffersState {
   offers: Offer[];

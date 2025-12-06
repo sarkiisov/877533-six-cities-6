@@ -1,10 +1,10 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { Offer } from '../../types';
+import { Offer } from '../../../types';
 import {
   loadFavoritesRequest,
   loadFavoritesSuccess,
   loadFavoritesError,
-} from '../actions';
+} from '../../actions';
 
 export interface FavoritesState {
   favorites: Offer[];

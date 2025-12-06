@@ -1,23 +1,20 @@
 import { useRef, useState } from 'react';
-import { OFFER_SORT_OPTIONS, OfferSortProps, OfferSortValue } from './types';
+import { OfferSortProps } from './OfferSort.types';
 import { useClickOutside } from '../../hooks/useClickOutside';
 
-export const OfferSort = ({
-  defaultValue = 'popular',
+export const OfferSort = <T extends string>({
+  options,
+  value,
   onChange,
-}: OfferSortProps) => {
+}: OfferSortProps<T>) => {
   const [opened, setOpened] = useState<boolean>(false);
-  const [value, setValue] = useState<OfferSortValue>(defaultValue);
 
   const sortRef = useRef<HTMLDivElement>(null);
 
-  const currentOption = OFFER_SORT_OPTIONS.find(
-    (option) => option.value === value
-  )!;
+  const currentOption = options.find((option) => option.value === value)!;
 
-  const handleOptionChange = (nextValue: OfferSortValue) => {
-    setValue(nextValue);
-    onChange?.(nextValue);
+  const handleOptionChange = (nextValue: string) => {
+    onChange?.(nextValue as T);
   };
 
   useClickOutside(sortRef, () => setOpened(false));
@@ -37,7 +34,7 @@ export const OfferSort = ({
       </span>
       {opened && (
         <ul className="places__options places__options--custom places__options--opened">
-          {OFFER_SORT_OPTIONS.map((option) => (
+          {options.map((option) => (
             <li
               key={option.value}
               onClick={() => handleOptionChange(option.value)}
