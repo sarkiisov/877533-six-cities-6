@@ -73,6 +73,8 @@ export const LoginForm = ({
           name="password"
           placeholder="Password"
           required
+          pattern="(?=.*[A-Za-z])(?=.*\d).+"
+          title="The password must contain at least one letter and one digit"
           value={formData.password}
           onChange={(event) => handleFieldChange(event)}
         />

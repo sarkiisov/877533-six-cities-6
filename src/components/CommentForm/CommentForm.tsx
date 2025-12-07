@@ -1,5 +1,6 @@
 import { Fragment, useState } from 'react';
 import { CommentFormData, CommentFormProps } from './CommentForm.types';
+import classes from './CommentForm.module.css';
 import clsx from 'clsx';
 
 const fallbackDefaultValues: CommentFormData = { rating: 4, comment: '' };
@@ -14,9 +15,12 @@ export const CommentForm = ({
     defaultValues ?? fallbackDefaultValues
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isError, setIsError] = useState(false);
 
   const isSubmitDisabled =
-    isSubmitting || !formData.rating || !formData.comment;
+    isSubmitting ||
+    !formData.rating ||
+    !(formData.comment.length >= 50 && formData.comment.length <= 300);
 
   const handleFieldChange = (
     event: React.ChangeEvent,
@@ -35,10 +39,15 @@ export const CommentForm = ({
     data: CommentFormData
   ) => {
     event.preventDefault();
+
+    setIsSubmitting(true);
+    setIsError(false);
+
     try {
-      setIsSubmitting(true);
       await onSubmit?.(data);
       setFormData(fallbackDefaultValues);
+    } catch {
+      setIsError(true);
     } finally {
       setIsSubmitting(false);
     }
@@ -87,6 +96,7 @@ export const CommentForm = ({
         id="comment"
         name="comment"
         minLength={50}
+        maxLength={300}
         placeholder="Tell how was your stay, what you like and what can be improved"
         value={formData.comment}
         onChange={handleFieldChange}
@@ -105,6 +115,13 @@ export const CommentForm = ({
         >
           Submit
         </button>
+      </div>
+      <div>
+        {isError && (
+          <span className={classes['error-message']}>
+            An error occurred while adding the review
+          </span>
+        )}
       </div>
     </form>
   );

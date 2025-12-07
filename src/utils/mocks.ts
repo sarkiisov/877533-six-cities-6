@@ -10,6 +10,9 @@ export const makeFakeCity = (): City => ({
   },
 });
 
+export const makeFakeCities = (count: number): City[] =>
+  Array.from({ length: count }, (): City => makeFakeCity());
+
 export const makeFakeOffer = (): Offer => ({
   id: faker.string.uuid(),
   title: faker.lorem.words(3),

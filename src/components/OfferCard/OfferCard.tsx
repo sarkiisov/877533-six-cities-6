@@ -1,7 +1,9 @@
+/* eslint-disable no-empty */
 import clsx from 'clsx';
 import { OfferCardClassNames, OfferCardProps } from './OfferCard.types';
 import { Link } from 'react-router-dom';
 import { useMemo, useState } from 'react';
+import { capitalize } from '../../utils/string';
 
 export const OfferCard = ({
   offer,
@@ -44,6 +46,7 @@ export const OfferCard = ({
     setIsFavoriteLoading(true);
     try {
       await onToggleFavorite?.(isFavorite);
+    } catch {
     } finally {
       setIsFavoriteLoading(false);
     }
@@ -80,6 +83,7 @@ export const OfferCard = ({
           </div>
 
           <button
+            data-testid={`toggle-favorite-${offer.id}`}
             onClick={() => void handleToggleFavorite(!offer.isFavorite)}
             disabled={isFavoriteLoading}
             className={clsx('place-card__bookmark-button button', {
@@ -104,7 +108,7 @@ export const OfferCard = ({
         <h2 className="place-card__name">
           <Link to={`/offer/${offer.id}`}>{offer.title}</Link>
         </h2>
-        <p className="place-card__type">{offer.type}</p>
+        <p className="place-card__type">{capitalize(offer.type)}</p>
       </div>
     </article>
   );
