@@ -88,13 +88,9 @@ export const postComment =
     comment: { comment: string; rating: number }
   ): ThunkAction<Promise<void>, RootState, AxiosInstance, Actions> =>
     async (dispatch, _getState, api) => {
-      try {
-        await api.post<Comment>(`/comments/${offerId}`, comment);
-        const { data: comments } = await api.get<Comment[]>(
-          `/comments/${offerId}`
-        );
-        dispatch(actions.loadCommentsSuccess(comments));
-      } catch {}
+      await api.post<Comment>(`/comments/${offerId}`, comment);
+      const { data: comments } = await api.get<Comment[]>(`/comments/${offerId}`);
+      dispatch(actions.loadCommentsSuccess(comments));
     };
 
 export const checkAuth =

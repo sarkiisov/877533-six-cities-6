@@ -7,14 +7,13 @@ import { Dispatch } from '../../store';
 import { getPointFromOffer } from '../../utils/offer';
 import { Header } from '../../components/Header';
 import { Navigate, useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   fetchOffer,
   postComment,
   toggleFavoriteOffer,
 } from '../../store/api-actions';
 import { capitalize } from '../../utils/string';
-import { Offer as OfferType } from '../../types';
 import { Loader } from '../../components/Loader';
 import { Footer } from '../../components/Footer';
 import {
@@ -24,11 +23,11 @@ import {
   getOfferData,
 } from '../../store/selectors';
 import clsx from 'clsx';
+import { Point } from '../../types';
 
 export const Offer = () => {
   const { id } = useParams() as { id: string };
 
-  const [hoveredOffer, setHoveredOffer] = useState<OfferType | null>(null);
   const [isFavoriteLoading, setIsFavoriteLoading] = useState(false);
 
   const dispatch = useDispatch<Dispatch>();
@@ -38,8 +37,25 @@ export const Offer = () => {
   const nearbyOffers = useSelector(getNearbyOffers);
   const comments = useSelector(getComments);
 
-  const handleFormSubmit = (comment: CommentFormData) => {
-    dispatch(postComment(id, comment));
+  const sortedComments = useMemo(
+    () =>
+      [...comments].sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+      ),
+    [comments]
+  );
+
+  const points = useMemo(
+    () =>
+      [
+        offer ? getPointFromOffer(offer) : undefined,
+        ...nearbyOffers.slice(0, 3).map(getPointFromOffer),
+      ].filter(Boolean) as Point[],
+    [offer, nearbyOffers]
+  );
+
+  const handleFormSubmit = async (comment: CommentFormData) => {
+    await dispatch(postComment(id, comment));
   };
 
   const handleToggleFavoriteClick = async (isFavorite: boolean) => {
@@ -72,7 +88,7 @@ export const Offer = () => {
             <section className="offer">
               <div className="offer__gallery-container container">
                 <div className="offer__gallery">
-                  {offer.images.map((image) => (
+                  {offer.images.slice(0, 6).map((image) => (
                     <div key={image} className="offer__image-wrapper">
                       <img
                         className="offer__image"
@@ -126,10 +142,12 @@ export const Offer = () => {
                       {capitalize(offer.type)}
                     </li>
                     <li className="offer__feature offer__feature--bedrooms">
-                      {offer.bedrooms} Bedroom(-s)
+                      {offer.bedrooms}{' '}
+                      {`Bedroom${offer.bedrooms > 1 ? 's' : ''}`}
                     </li>
                     <li className="offer__feature offer__feature--adults">
-                      Max {offer.maxAdults} adult(-s)
+                      Max {offer.maxAdults}{' '}
+                      {`adult${offer.maxAdults > 1 ? 's' : ''}`}
                     </li>
                   </ul>
                   <div className="offer__price">
@@ -149,7 +167,12 @@ export const Offer = () => {
                   <div className="offer__host">
                     <h2 className="offer__host-title">Meet the host</h2>
                     <div className="offer__host-user user">
-                      <div className="offer__avatar-wrapper offer__avatar-wrapper--pro user__avatar-wrapper">
+                      <div
+                        className={clsx(
+                          'offer__avatar-wrapper  user__avatar-wrapper',
+                          offer.host.isPro && 'offer__avatar-wrapper--pro'
+                        )}
+                      >
                         <img
                           className="offer__avatar user__avatar"
                           src={offer.host.avatarUrl}
@@ -170,7 +193,7 @@ export const Offer = () => {
                     </div>
                   </div>
                   <section className="offer__reviews reviews">
-                    <CommentList comments={comments} />
+                    <CommentList comments={sortedComments} />
                     {authStatus === 'AUTH' && (
                       <CommentForm onSubmit={handleFormSubmit} />
                     )}
@@ -181,8 +204,8 @@ export const Offer = () => {
                 className="offer__map map"
                 style={{ backgroundImage: 'none' }}
                 city={offer.city}
-                points={nearbyOffers.map(getPointFromOffer)}
-                selectedPoint={hoveredOffer?.id}
+                points={points}
+                selectedPoint={id}
               />
             </section>
             <div className="container">
@@ -191,11 +214,7 @@ export const Offer = () => {
                   Other places in the neighborhood
                 </h2>
                 <div className="near-places__list places__list">
-                  <OfferCardList
-                    onOfferHover={setHoveredOffer}
-                    offers={nearbyOffers}
-                    orientation="vertical"
-                  />
+                  <OfferCardList offers={nearbyOffers} orientation="vertical" />
                 </div>
               </section>
             </div>

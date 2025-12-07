@@ -1,6 +1,8 @@
 import { Offer, Point } from '../types';
 
-export const getPointFromOffer = (offer: Offer): Point => ({
+export const getPointFromOffer = (
+  offer: Pick<Offer, 'id' | 'location' | 'title'>
+): Point => ({
   id: offer.id,
   latitude: offer.location.latitude,
   longitude: offer.location.longitude,

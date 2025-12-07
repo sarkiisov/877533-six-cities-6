@@ -28,12 +28,15 @@ export const OfferSort = <T extends string>({
       <span className="places__sorting-caption">Sort by</span>
       <span className="places__sorting-type" tabIndex={0}>
         {currentOption.label}
-        <svg className="places__sorting-arrow" width="7" height="4">
+        <svg role="img" className="places__sorting-arrow" width="7" height="4">
           <use xlinkHref="#icon-arrow-select"></use>
         </svg>
       </span>
       {opened && (
-        <ul className="places__options places__options--custom places__options--opened">
+        <ul
+          role="list"
+          className="places__options places__options--custom places__options--opened"
+        >
           {options.map((option) => (
             <li
               key={option.value}
