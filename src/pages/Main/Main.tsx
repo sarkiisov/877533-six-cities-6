@@ -12,8 +12,8 @@ import { fetchOffers, toggleFavoriteOffer } from '../../store/api-actions';
 import { OfferSort } from '../../components/OfferSort';
 import { Loader } from '../../components/Loader';
 import { Header } from '../../components/Header';
-import { getCity, getOffersData } from '../../store/selectors';
-import { Navigate } from 'react-router-dom';
+import { getAuthStatus, getCity, getOffersData } from '../../store/selectors';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { OfferEmpty } from '../../components/OfferEmpty';
 import clsx from 'clsx';
 import { offerComparators, OfferSortOption } from '../../utils/offerSort';
@@ -22,11 +22,13 @@ export const Main = () => {
   const [hoveredOffer, setHoveredOffer] = useState<Offer | null>(null);
   const [sort, setSort] = useState<OfferSortOption>('popular');
 
+  const navigate = useNavigate();
+
   const dispatch = useDispatch<Dispatch>();
 
   const city = useSelector(getCity);
-
   const { offers, isLoading, isError } = useSelector(getOffersData);
+  const authStatus = useSelector(getAuthStatus);
 
   const filteredAndSortedOffers = useMemo(() => {
     const filteredOffers = offers.filter(
@@ -45,7 +47,11 @@ export const Main = () => {
     offer: Offer,
     isFavorite: boolean
   ) => {
-    await dispatch(toggleFavoriteOffer(offer.id, isFavorite));
+    if (authStatus === 'NO_AUTH') {
+      navigate('/login');
+    } else {
+      await dispatch(toggleFavoriteOffer(offer.id, isFavorite));
+    }
   };
 
   useEffect(() => {

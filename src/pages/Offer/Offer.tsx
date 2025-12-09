@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Dispatch } from '../../store';
 import { getPointFromOffer } from '../../utils/offer';
 import { Header } from '../../components/Header';
-import { Navigate, useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
 import {
   fetchOffer,
@@ -30,6 +30,8 @@ export const Offer = () => {
 
   const [isFavoriteLoading, setIsFavoriteLoading] = useState(false);
 
+  const navigate = useNavigate();
+
   const dispatch = useDispatch<Dispatch>();
 
   const authStatus = useSelector(getAuthStatus);
@@ -39,9 +41,9 @@ export const Offer = () => {
 
   const sortedComments = useMemo(
     () =>
-      [...comments].sort(
-        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-      ),
+      [...comments]
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+        .slice(0, 10),
     [comments]
   );
 
@@ -59,11 +61,15 @@ export const Offer = () => {
   };
 
   const handleToggleFavoriteClick = async (isFavorite: boolean) => {
-    setIsFavoriteLoading(true);
-    try {
-      await dispatch(toggleFavoriteOffer(id, isFavorite));
-    } finally {
-      setIsFavoriteLoading(false);
+    if (authStatus === 'NO_AUTH') {
+      navigate('/login');
+    } else {
+      setIsFavoriteLoading(true);
+      try {
+        await dispatch(toggleFavoriteOffer(id, isFavorite));
+      } finally {
+        setIsFavoriteLoading(false);
+      }
     }
   };
 
