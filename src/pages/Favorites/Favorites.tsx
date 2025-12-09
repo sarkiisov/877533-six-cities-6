@@ -16,16 +16,16 @@ export const Favorites = () => {
 
   const { favorites, isLoading, isError } = useSelector(getFavoritesData);
 
-  useEffect(() => {
-    dispatch(fetchFavorites());
-  }, [dispatch]);
-
   const handleToggleFavoriteClick = async (
     offer: Offer,
     isFavorite: boolean
   ) => {
     await dispatch(toggleFavoriteOffer(offer.id, isFavorite));
   };
+
+  useEffect(() => {
+    dispatch(fetchFavorites());
+  }, [dispatch]);
 
   if (isError) {
     return <Navigate to="/404" />;

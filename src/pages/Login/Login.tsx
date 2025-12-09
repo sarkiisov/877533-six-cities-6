@@ -3,6 +3,11 @@ import { Dispatch } from '../../store';
 import { useDispatch } from 'react-redux';
 import { LoginForm, LoginFormData } from '../../components/LoginForm';
 import { login } from '../../store/api-actions';
+import { useMemo } from 'react';
+import { getRandomItem } from '../../utils/array';
+import { CITIES } from '../../utils/consts';
+import { City } from '../../types';
+import { actions } from '../../store/actions';
 
 export const Login = () => {
   const dispatch = useDispatch<Dispatch>();
@@ -11,6 +16,13 @@ export const Login = () => {
 
   const handleFormSubmit = async (data: LoginFormData) => {
     await dispatch(login(data));
+    navigate('/');
+  };
+
+  const randomCity = useMemo<City>(() => getRandomItem(CITIES)!, []);
+
+  const handleRandomCityClick = (city: City) => {
+    dispatch(actions.setCity(city));
     navigate('/');
   };
 
@@ -41,9 +53,12 @@ export const Login = () => {
           </section>
           <section className="locations locations--login locations--current">
             <div className="locations__item">
-              <Link className="locations__item-link" to="/">
-                <span>Amsterdam</span>
-              </Link>
+              <a
+                className="locations__item-link"
+                onClick={() => handleRandomCityClick(randomCity)}
+              >
+                <span>{randomCity.name}</span>
+              </a>
             </div>
           </section>
         </div>
